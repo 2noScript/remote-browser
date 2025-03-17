@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.9'
 
 services:
   app:
@@ -7,6 +7,8 @@ services:
       dockerfile: Dockerfile.browser
     networks:
       - local_browser_net
+    ports:
+      - "3000-3020:3000-3020"
 
   nginx:
     image: nginx:alpine
@@ -18,7 +20,11 @@ services:
     networks:
       - local_browser_net
     volumes:
-      - ./config/nginx.conf:/etc/nginx/nginx.conf 
+
+      - ./configs/proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./configs/proxy/conf.d:/etc/nginx/conf.d:ro
+      - ./share/nginx:/usr/share/nginx
+
     command: [nginx-debug, '-g', 'daemon off;']
 
 networks:
