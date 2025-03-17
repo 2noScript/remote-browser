@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.browser
+    networks:
+      - local_browser_net
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+      - "5000:5000" 
+    depends_on:
+      - app
+    networks:
+      - local_browser_net
+    volumes:
+      - ./config/nginx.conf:/etc/nginx/nginx.conf 
+    command: [nginx-debug, '-g', 'daemon off;']
+
+networks:
+  local_browser_net:
+    driver: bridge
