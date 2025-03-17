@@ -7,8 +7,8 @@ services:
       dockerfile: Dockerfile.browser
     networks:
       - local_browser_net
-    ports:
-      - "3000-3020:3000-3020"
+    # ports:
+    #   - "3000-3020:3000-3020"
 
   nginx:
     image: nginx:alpine
