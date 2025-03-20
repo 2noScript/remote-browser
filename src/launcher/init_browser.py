@@ -4,7 +4,7 @@ from camoufox.server import launch_server
 def init_browser():
     parser = argparse.ArgumentParser(description="Launch Camoufox Server")
     
-    parser.add_argument('--headless', type=str, default='virtual', help='Headless mode')
+    parser.add_argument('--headless', type=str, default='false', help='Headless mode')
     parser.add_argument('--geoip', type=bool, default=True, help='Enable GeoIP')
     parser.add_argument('--humanize', type=bool, default=True, help='Enable humanized output')
     parser.add_argument('--os', type=str, default='windows', help='Operating system')
@@ -13,7 +13,7 @@ def init_browser():
     parser.add_argument('--ws_path', type=str, required=True, help='WebSocket path')
 
     args = parser.parse_args()
-
+    print(args)
     launch_server(
         headless=args.headless,
         geoip=args.geoip,
@@ -24,3 +24,4 @@ def init_browser():
         ws_path=args.ws_path
     )
 
+init_browser()
