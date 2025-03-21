@@ -37,7 +37,6 @@ from aylak.rich.console import Console
 
 console = Console()
 
-__version__ = "0.0.4.4"
 
 
 class PathIsFolderError(Exception):
@@ -156,6 +155,7 @@ class AioPM2:
                 + (["--name", name] if name else [])
                 + extra_args
             )
+            print("cmd",cmd)
             await self.execute_command(cmd)
             return await self.get(
                 pm_id=max([process.pm_id for process in await self.list()])
@@ -272,7 +272,6 @@ class PM2:
         if pm_id is None:
             extra_args = extra_args or []
             if os.path.isdir(path):
-
                 raise PathIsFolderError("Path is a folder; a file is expected.")
             cmd = (
                 self.COMMAND

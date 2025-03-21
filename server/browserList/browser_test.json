@@ -1,0 +1,10 @@
+{
+  "apps": [
+    {
+      "name": "browser_test",
+      "script": "server/launcher/test_run.py",
+      "interpreter": "python3",
+      "instances": 1
+    }
+  ]
+}

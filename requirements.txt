@@ -1,4 +1,5 @@
 camoufox[geoip]>=0.4.11
 fastapi[standard]
 python-dotenv==1.0.1
-pm2==0.0.4.4
+aiofiles==23.2.1
+path==17.1.0
