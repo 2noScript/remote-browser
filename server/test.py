@@ -1,6 +1,9 @@
-import asyncio
-from service.browser import run_browser
+# import asyncio
+# from service.browser import run_browser
 
 
 
-asyncio.run(run_browser())
+# asyncio.run(run_browser())
+
+
+print("test start")
