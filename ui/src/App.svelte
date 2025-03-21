@@ -34,7 +34,7 @@
   <link rel="stylesheet" href="https://unpkg.com/svelte-material-ui/bare.css" />
 </svelte:head>
 <nav>
-  <a href="/">Home</a>
+  <a href="/" use:link >Home</a>
   <a href="/about" use:link>About</a>
 </nav>
 <main>

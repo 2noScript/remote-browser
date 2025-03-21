@@ -4,7 +4,7 @@ import time
 
 
 while True:
-    time.sleep(5)
+    time.sleep(20)
     print("1")
 
 
