@@ -21,7 +21,7 @@ RUN /app/venv/bin/python -m camoufox fetch
 
 COPY server/ /app/server/
 COPY ui/dist/ /app/ui/dist/
-COPY ui/.env /app/ui/.env
+# COPY ui/.env /app/ui/.env
 
 EXPOSE 3000-4000
 

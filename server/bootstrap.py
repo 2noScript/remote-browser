@@ -3,14 +3,16 @@ from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from fastapi.staticfiles import StaticFiles
 from constant.config import DEV
-from routers.ping import router as ping_router
 
+from routers.ping import router as ping_router
+from routers.browser import router as browser_router
 
 
 
 app = FastAPI()
 
 app.include_router(ping_router)
+app.include_router(browser_router)
 
 app.add_middleware(
     CORSMiddleware,

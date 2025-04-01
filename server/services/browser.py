@@ -2,7 +2,7 @@ from pm2 import AioPM2
 
 aiopm2 = AioPM2()
 
-class Browser:
+class BrowserService:
     def __init__(self):
         self.history = []
     async def get_browser_list(self):

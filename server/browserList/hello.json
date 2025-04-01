@@ -1,0 +1,15 @@
+{
+    "apps": [
+        {
+            "name": "hello",
+            "script": "test.py",
+            "instances": "max",
+            "watch": true,
+            "args": [
+                "test",
+                "test"
+            ],
+            "log_file": "test.log"
+        }
+    ]
+}

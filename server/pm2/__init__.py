@@ -28,14 +28,13 @@ Example:
 import asyncio
 import os
 import subprocess
+import json
 from json import dumps, loads
 from time import time
 from typing import Any, List, Optional
 
 import aiofiles
-from aylak.rich.console import Console
 
-console = Console()
 
 
 
@@ -98,7 +97,7 @@ class PM2Process:
 
     def json(self, markup_print: bool = False):
         if markup_print:
-            console.print_json(data=self.full_json)
+            print(json.dumps(self.full_json, indent=4, ensure_ascii=True))  # Replaced with standard print
         return dumps(self.full_json, indent=4, ensure_ascii=True)
 
 

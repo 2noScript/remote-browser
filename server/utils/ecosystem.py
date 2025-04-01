@@ -1,8 +1,9 @@
 import asyncio
 import aiofiles
 from pydantic import BaseModel
-from typing import Optional, Dict
 from typing import Optional, List
+from pathlib import Path
+import json
 
 class EcosystemApp(BaseModel):
     name: str
@@ -13,23 +14,28 @@ class EcosystemApp(BaseModel):
     log_file: Optional[str] = None
 
 async def create_ecosystem_config(app: EcosystemApp):
-    config_content = f"""{{
-        "apps": [
-            {{
-                "name": "{app.name}",
-                "script": "{app.script}",
-                "instances": "{app.instances or 'max'}",
-                "watch": {str(app.watch).lower() if app.watch is not None else 'true'},
-                "args": {app.args or []}, 
-                "log_file": "{app.log_file or ''}"
-            }}
-        ]
-    }}"""
-    
-    async with aiofiles.open("ecosystem.json", "w") as f:
-        await f.write(config_content)
-
+    path = Path("server/browserList")
+    config_content = generate_config_content(app)
+    await write_config_file(path, app.name, config_content)
     print("File ecosystem.config.js đã được tạo!")
+
+def generate_config_content(app: EcosystemApp) -> str:
+    return json.dumps({
+        "apps": [
+            {
+                "name": app.name,
+                "script": app.script,
+                "instances": app.instances or 'max',
+                "watch": app.watch if app.watch is not None else True,
+                "args": app.args or [],
+                "log_file": app.log_file or ''
+            }
+        ]
+    }, indent=4)
+
+async def write_config_file(path: Path, name: str, content: str):
+    async with aiofiles.open(f"{path.resolve()}/{name}.json", "w") as f:
+        await f.write(content)
 
 # Example usage
 # example_app = EcosystemApp(
