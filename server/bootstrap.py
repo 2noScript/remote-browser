@@ -5,7 +5,6 @@ from fastapi.staticfiles import StaticFiles
 from constant.config import DEV
 
 from routers.ping import router as ping_router
-from routers.browser import router as browser_router
 
 
 
