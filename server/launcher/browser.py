@@ -2,6 +2,7 @@ import sys
 import json
 import argparse
 from camoufox.server import launch_server
+from browserforge.fingerprints import Screen
 
 class BrowserLauncher:
     def __init__(self):
@@ -30,9 +31,13 @@ class BrowserLauncher:
             return {}
 
     def launch(self):
-        """Main entry point that loads configuration and launches the server."""
         config = self._load_config()
         launch_server(
+            os=["windows", "macos", "linux"],
+            screen=Screen(max_width=1920, max_height=1080),
+            humanize=True,
+            headless="virtual",
+            geoip=True  
             **config
         )
 

@@ -21,7 +21,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.mount("/", StaticFiles(directory="ui/dist", html=True), name="static")
+# app.mount("/", StaticFiles(directory="ui/dist", html=True), name="static")
 
 if __name__ == "__main__":
     uvicorn.run("bootstrap:app", host="0.0.0.0", port=3000, reload=DEV)

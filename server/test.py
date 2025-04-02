@@ -1,18 +1,9 @@
 import asyncio
-from utils.ecosystem import create_ecosystem_config,EcosystemApp
+from models import BrowserConfig
 
-option = {
-    "name": "hello",
-    "script": "test.py",
-    "instances": "max",
-    "watch": True,
-    "args": ["test", "test"],
-    "log_file": "test.log"
-}
-
-option = EcosystemApp(**option)
 async def main():
-    await create_ecosystem_config(option)
+    b = BrowserConfig(port=1234, config={"xxx": "l"})
+    await b.save()  # Use await to call the asynchronous save method
 
 # Run the async function
 asyncio.run(main())
