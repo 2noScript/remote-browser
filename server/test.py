@@ -1,9 +1,14 @@
 import asyncio
 from models import BrowserConfig
+from utils.commands import CamoufoxCommand
+import time
 
 async def main():
-    b = BrowserConfig(port=1234, config={"xxx": "l"})
-    await b.save()  # Use await to call the asynchronous save method
+    br = BrowserConfig(port=4002, config={"headless": False, "debug": True})
+    cm=CamoufoxCommand(br)
+    await cm.start()
+    a=await cm.stop()
+
 
 # Run the async function
 asyncio.run(main())

@@ -5,7 +5,6 @@ import os
 import re
 import signal
 from pathlib import Path
-from typing import Optional
 from threading import Event
 from models import BrowserConfig
 
@@ -14,28 +13,30 @@ from models import BrowserConfig
 class CamoufoxCommand:
     def __init__(self, browser_config: BrowserConfig):
         self._browser_config = browser_config
-        self._options=browser_config.parse()
+        self._options = browser_config.parse()
         self._process = None
         self._ws_endpoint = None
-        self._start_timeout = options.get("startTimeout", 30000) if options else 30000
-        self._server_path = Path(__file__).parent / "server/launcher/browser.py"
+        self._start_timeout = self._options.get("startTimeout", 30000) if self._options else 30000
+        self._server_path = Path(__file__).parent.parent / "launcher/browser.py"
         self._stop_event = Event()
     async def _wait_for_server(self):
-        assert self._process.stdout
+        if not self._process or not self._process.stdout:
+            raise RuntimeError("Process or stdout not initialized")
         while True:
             line = await asyncio.get_event_loop().run_in_executor(None, self._process.stdout.readline)
             if not line:
                 break
-            clean_line = re.sub(r'\x1B\[[0-9;]*[mK]', '', line.strip())
-            match = re.search(r"WebSocket endpoint: (\S+)",clean_line)
+            # Updated regex pattern and capture the endpoint
+            match = re.search(r"(ws://localhost[^\s]+)", line.strip())
             if match:
+                self._ws_endpoint = match.group(1)  
                 break
     async def start(self) -> str:
         if self._process:
             raise RuntimeError("Server is already running")
 
-        config_arg = json.dumps(self._options).replace('"', '\\"')
-        command = ["python", "-X", "utf8", str(self._server_path), "--config", config_arg]
+        config_arg = f"'{json.dumps(self._options)}'"  # Wrap the JSON string in single quotes
+        command = ["python", str(self._server_path), "--config", config_arg]
 
         self._process = subprocess.Popen(
             command,
@@ -52,16 +53,29 @@ class CamoufoxCommand:
         except asyncio.TimeoutError:
             self._cleanup()
             raise RuntimeError(f"Server start timeout after {self._start_timeout}ms")
+        if self._ws_endpoint is None:
+            raise RuntimeError("WebSocket endpoint not initialized")
         return self._ws_endpoint
     
 
     async def stop(self) -> int:
         if self._process:
-            self._process.terminate()
-            try:
+            pid = self._process.pid
+            try:   
+
+                browser_cmd = f"pkill -TERM -P {pid}"
+                await asyncio.create_subprocess_shell(browser_cmd)
+                await asyncio.sleep(1)  # Give TERM signal time to work
+                browser_cmd_force = f"pkill -KILL -P {pid}"
+                await asyncio.create_subprocess_shell(browser_cmd_force)
+                
                 await asyncio.wait_for(asyncio.to_thread(self._process.wait), timeout=5)
-            except asyncio.TimeoutError:
-                os.kill(self._process.pid, signal.SIGKILL)
+                print("All processes terminated successfully")
+            except Exception as e:
+                try:
+                    await asyncio.to_thread(os.kill, pid, signal.SIGKILL)
+                except ProcessLookupError:
+                    print("Process already terminated")
             self._cleanup()
             return 0
         return 1

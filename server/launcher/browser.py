@@ -32,14 +32,21 @@ class BrowserLauncher:
 
     def launch(self):
         config = self._load_config()
+        launch_options ={
+            "ws_path":"browser",
+            "os":["windows", "macos", "linux"],
+            "screen":Screen(max_width=1920, max_height=1080),
+            "humanize":True,
+            # "headless":"virtual",
+            "geoip":True,
+            **config,
+
+        }
+        print(launch_options)
         launch_server(
-            os=["windows", "macos", "linux"],
-            screen=Screen(max_width=1920, max_height=1080),
-            humanize=True,
-            headless="virtual",
-            geoip=True  
-            **config
+            **launch_options
         )
+
 
 
 # python server/launcher/browser.py --config '{"headless": false, "debug": true}'
