@@ -5,3 +5,5 @@ assets/input
 __pycache__/
 **/__pycache__/
 .env
+
+server/launcher.config/*.json
