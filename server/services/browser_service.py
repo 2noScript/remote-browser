@@ -12,7 +12,7 @@ import random
 
 
 
-_browser_lunchers_dir=Path("server/launcher.config/browsers")
+_browser_lunchers_dir=Path("server/launcher.config")
 
 
 class BrowserService:
