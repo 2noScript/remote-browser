@@ -42,7 +42,7 @@ class CamoufoxCommand:
             command,
             cwd=str(self._server_path.parent),
             env=os.environ.copy(),
-            shell=True if os.name == "nt" else False,
+            # shell=True if os.name == "nt" else False,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
@@ -68,7 +68,7 @@ class CamoufoxCommand:
                 await asyncio.sleep(1)  # Give TERM signal time to work
                 browser_cmd_force = f"pkill -KILL -P {pid}"
                 await asyncio.create_subprocess_shell(browser_cmd_force)
-                
+
                 await asyncio.wait_for(asyncio.to_thread(self._process.wait), timeout=5)
                 print("All processes terminated successfully")
             except Exception as e:

@@ -5,6 +5,7 @@ import time
 
 async def main():
     br = BrowserConfig(port=4002, config={"headless": False, "debug": True})
+    await br.save()
     cm=CamoufoxCommand(br)
     await cm.start()
     a=await cm.stop()

@@ -13,8 +13,8 @@ class BrowserConfig(BaseModel):
     port: int
     
     async def save(self):
-        browser_config = json.dumps(**self.parse())
-        await write_config_file(path=_browser_lunchers_dir,name=self.id,content=browser_config)
+        browser_config = json.dumps(self.parse())
+        await write_config_file(path=_browser_lunchers_dir,name=f"{self.id}_{self.port}",content=browser_config)
     def parse(self):
         return {
             **self.config,
