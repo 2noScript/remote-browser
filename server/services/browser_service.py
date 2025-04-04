@@ -25,20 +25,20 @@ class BrowserService:
         return True
 
     async def action_create(self):
-        # init_port=await self._random_available_port()
-        # print("port",init_port)
-        # browser_config=BrowserConfig(port=init_port)
-        # browser_command=CamoufoxCommand(browser_config)
-        # is_start=await browser_command.start()
-        # if not is_start:
-        #     return False
-        # await self._save_browser_config(browser_config)
-        # store["browser"][browser_config.id]=browser_command
+        init_port=await self._random_available_port()
+        print("port",init_port)
+        browser_config=BrowserConfig(port=init_port)
+        browser_command=CamoufoxCommand(browser_config)
+        is_start=await browser_command.start()
+        if not is_start:
+            return False
+        await self._save_browser_config(browser_config)
+        store["browser"][browser_config.id]=browser_command
 
         
-        # return True
+        return True
 
-        return await self._load_info_browser_config_list()
+
         
     async def action_stop(self,identify:str):
         return True
@@ -70,7 +70,7 @@ class BrowserService:
     
     async def _random_available_port(self):
         while True:
-            port=random.choice(BROWSER_PORT)
+            port=random.randint(BROWSER_PORT[0],BROWSER_PORT[1])
             if not await self._check_port_has_used(port):
                 return port
     def _get_identify(self,browser_config:BrowserConfig):
