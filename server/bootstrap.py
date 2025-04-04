@@ -2,16 +2,17 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from fastapi.staticfiles import StaticFiles
-from constant.config import DEV
+from constant import DEV
 
 from routers.ping import router as ping_router
+from routers import router as browser_router
 
 
 
 app = FastAPI()
 
 app.include_router(ping_router)
-app.include_router(browser_router)
+app.include_router(browser_router, prefix="/api")
 
 app.add_middleware(
     CORSMiddleware,
@@ -23,4 +24,4 @@ app.add_middleware(
 # app.mount("/", StaticFiles(directory="ui/dist", html=True), name="static")
 
 if __name__ == "__main__":
-    uvicorn.run("bootstrap:app", host="0.0.0.0", port=3000, reload=DEV)
+    uvicorn.run("bootstrap:app", host="0.0.0.0", port=5008, reload=bool(DEV))

@@ -1,8 +1,4 @@
 
-
-
-browser={}
-
-browser_context={}
-
-page={}
+store={
+    "browser":{},
+}

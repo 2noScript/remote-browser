@@ -42,10 +42,7 @@ class BrowserLauncher:
             **config,
 
         }
-        print(launch_options)
-        launch_server(
-            **launch_options
-        )
+        launch_server(**launch_options)
 
 
 

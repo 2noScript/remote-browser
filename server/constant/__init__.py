@@ -5,4 +5,4 @@ load_dotenv()
 
 BROWSER_LIMIT=os.getenv("BROWSER_LIMIT")
 BROWSER_PORT=[3000,4000]
-DEV=os.getenv("DEV")
+DEV=os.getenv("DEV") 

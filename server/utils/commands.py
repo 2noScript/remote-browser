@@ -31,9 +31,10 @@ class CamoufoxCommand:
             if match:
                 self._ws_endpoint = match.group(1)  
                 break
-    async def start(self) -> str:
+    async def start(self) -> bool:
         if self._process:
-            raise RuntimeError("Server is already running")
+            print("Server is already running")
+            return False
 
         config_arg = f"'{json.dumps(self._options)}'"  # Wrap the JSON string in single quotes
         command = ["python", str(self._server_path), "--config", config_arg]
@@ -54,8 +55,9 @@ class CamoufoxCommand:
             self._cleanup()
             raise RuntimeError(f"Server start timeout after {self._start_timeout}ms")
         if self._ws_endpoint is None:
-            raise RuntimeError("WebSocket endpoint not initialized")
-        return self._ws_endpoint
+            print("WebSocket endpoint not initialized")
+            return False
+        return True
     
 
     async def stop(self) -> int:
@@ -85,7 +87,7 @@ class CamoufoxCommand:
         self._ws_endpoint = None
         self._stop_event.set()
 
-    async def restart(self) -> str:
+    async def restart(self) -> bool:
         await self.stop()
         return await self.start()
 
