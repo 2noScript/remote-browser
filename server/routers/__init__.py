@@ -28,4 +28,4 @@ async def browser_info(identify: str):
 
 @router.get("/list")
 async def browser_list():
-    return {"message": "pong"}
+    return await browser_service.get_list()

@@ -1,6 +1,3 @@
-import re
-
-from uvicorn import config
 from store import store
 from models import BrowserConfig
 from pathlib import Path
@@ -16,28 +13,38 @@ _browser_lunchers_dir=Path("server/launcher.config")
 
 
 class BrowserService:
-    def __init__(self):
-        pass
-    
 
-    async def action_start(self):
-       
-        return True
+    async def action_create(self, identify: str | None = None):
+        try:
+            if identify:
+                # Load existing configuration
+                browser_config_json = self._get_browser_config_json_with_identify(identify)
+                if not browser_config_json:
+                    return {"success": False, "error": "Configuration not found"}
+                browser_config = BrowserConfig(**browser_config_json)
+            else:
+                browser_config = BrowserConfig(port=await self._random_available_port())
 
-    async def action_create(self):
-        init_port=await self._random_available_port()
-        print("port",init_port)
-        browser_config=BrowserConfig(port=init_port)
-        browser_command=CamoufoxCommand(browser_config)
-        is_start=await browser_command.start()
-        if not is_start:
-            return False
-        await self._save_browser_config(browser_config)
-        store["browser"][browser_config.id]=browser_command
+            browser_command = CamoufoxCommand(browser_config)
+            await browser_command.start()
+            # Save configuration and store instance
+            await self._save_browser_config(browser_config)
+            store["browser"][browser_config.id] = browser_command
 
-        
-        return True
+            return {
+                "success": True,
+                "browser_id": browser_config.id,
+                "port": browser_config.port
+            }
 
+        except Exception as e:
+            return {
+                "success": False,
+                "error": str(e)
+            }
+
+    async def action_start(self,identify:str):    
+        return await self.action_create(identify=identify)
 
         
     async def action_stop(self,identify:str):
@@ -75,3 +82,7 @@ class BrowserService:
                 return port
     def _get_identify(self,browser_config:BrowserConfig):
         return f"{browser_config.id}_{browser_config.port}"
+
+    def _get_browser_config_json_with_identify(self, identify: str):
+        config_path = _browser_lunchers_dir.joinpath(f"{identify}.json")
+        return json.loads(config_path.read_text()) if config_path.exists() else {}
