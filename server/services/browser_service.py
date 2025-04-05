@@ -1,3 +1,4 @@
+from re import T
 from store import store
 from models import BrowserConfig
 from pathlib import Path
@@ -51,15 +52,15 @@ class BrowserService:
 
         
     async def action_stop(self,identify:str):
-        print(identify)
-        print(store["browser"])
         browser_command=store["browser"].get(identify)
         if not browser_command:
-            return False
+            return True
         await browser_command.stop()
         return True
 
     async def action_delete(self,identify:str):
+        await self.action_stop(identify)
+        await self._delete_browser_config_json(identify)
         return True
 
     async def get_info(self,identify:str):
@@ -92,6 +93,15 @@ class BrowserService:
     def _get_identify(self,browser_config:BrowserConfig):
         return f"{browser_config.id}_{browser_config.port}"
 
+    async def _delete_browser_config_json(self, identify: str) -> bool:
+        try:
+            config_path = _browser_lunchers_dir.joinpath(f"{identify}.json")
+            if config_path.exists():
+                config_path.unlink()
+                return True
+            return False
+        except Exception:
+            return False
     def _get_browser_config_json_with_identify(self, identify: str) -> dict:
         try:
             config_path = _browser_lunchers_dir.joinpath(f"{identify}.json")
