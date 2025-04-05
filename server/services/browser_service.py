@@ -17,21 +17,24 @@ class BrowserService:
     async def action_create(self, identify: str | None = None):
         try:
             if identify:
-                # Load existing configuration
                 browser_config_json = self._get_browser_config_json_with_identify(identify)
                 if not browser_config_json:
                     return {"success": False, "error": "Configuration not found"}
-                browser_config = BrowserConfig(**browser_config_json)
+                browser_config = BrowserConfig(
+                    id=browser_config_json["id"], 
+                    port=browser_config_json["port"],
+                    config=browser_config_json["config"])
             else:
-                browser_config = BrowserConfig(port=await self._random_available_port())
+                browser_config = BrowserConfig(
+                    port=await self._random_available_port())
 
             browser_command = CamoufoxCommand(browser_config)
             await browser_command.start()
-            # Save configuration and store instance
             await self._save_browser_config(browser_config)
-            store["browser"][browser_config.id] = browser_command
+            store["browser"][self._get_identify(browser_config)] = browser_command
 
             return {
+                "pid": browser_command.get_pid(),
                 "success": True,
                 "browser_id": browser_config.id,
                 "port": browser_config.port
@@ -48,6 +51,12 @@ class BrowserService:
 
         
     async def action_stop(self,identify:str):
+        print(identify)
+        print(store["browser"])
+        browser_command=store["browser"].get(identify)
+        if not browser_command:
+            return False
+        await browser_command.stop()
         return True
 
     async def action_delete(self,identify:str):
@@ -83,6 +92,19 @@ class BrowserService:
     def _get_identify(self,browser_config:BrowserConfig):
         return f"{browser_config.id}_{browser_config.port}"
 
-    def _get_browser_config_json_with_identify(self, identify: str):
-        config_path = _browser_lunchers_dir.joinpath(f"{identify}.json")
-        return json.loads(config_path.read_text()) if config_path.exists() else {}
+    def _get_browser_config_json_with_identify(self, identify: str) -> dict:
+        try:
+            config_path = _browser_lunchers_dir.joinpath(f"{identify}.json")
+            if not config_path.exists():
+                return {}
+            
+            id, port = identify.split('_')
+            config_data = json.loads(config_path.read_text())
+            
+            return {
+                "config": config_data,
+                "id": id,
+                "port": int(port)  # Convert port to integer
+            }
+        except (json.JSONDecodeError, ValueError, IndexError):
+            return {}

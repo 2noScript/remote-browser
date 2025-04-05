@@ -90,6 +90,10 @@ class CamoufoxCommand:
     async def restart(self) -> bool:
         await self.stop()
         return await self.start()
+    def get_pid(self):
+        if self._process:
+            return self._process.pid
+        return None
 
 
 
