@@ -14,9 +14,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN python -m camoufox fetch
 
 COPY server/ /app/server/
-COPY ui/dist/ /app/ui/dist/
 
-EXPOSE 3000-4000
+# EXPOSE 3000-4000
 
 CMD ["python", "server/bootstrap.py"]
 
