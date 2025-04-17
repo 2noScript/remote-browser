@@ -3,4 +3,4 @@ fastapi[standard]
 python-dotenv==1.0.1
 aiofiles==23.2.1
 pathlib==1.0.1
-pydantic>=2.11.1
+SQLAlchemy>=2.0.23

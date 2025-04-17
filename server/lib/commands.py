@@ -6,14 +6,12 @@ import re
 import signal
 from pathlib import Path
 from threading import Event
-from models import BrowserConfig
-
+from db import BrowserDB
 
 
 class CamoufoxCommand:
-    def __init__(self, browser_config: BrowserConfig):
-        self._browser_config = browser_config
-        self._options = browser_config.parse()
+    def __init__(self, browser: BrowserDB):
+        self._options = browser.config
         self._process = None
         self._ws_endpoint = None
         self._start_timeout = self._options.get("startTimeout", 30000) if self._options else 30000

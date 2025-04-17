@@ -11,16 +11,16 @@ async def browser_create():
     return await browser_service.action_create()
 
 @router.post("/start")
-async def browser_start(body:BrowserStart):
-    return await browser_service.action_start(**body.model_dump())
+async def browser_start(body: BrowserStart):
+    return await browser_service.action_start(identify=body.identify)
 
 @router.post("/stop")
 async def browser_stop(body:BrowserStop):
-    return await browser_service.action_stop(**body.model_dump())
+    return await browser_service.action_stop(identify=body.identify)
 
 @router.delete("/delete")
 async def browser_delete(body:BrowserDelete):
-    return await browser_service.action_delete(**body.model_dump())
+    return await browser_service.action_delete(identify=body.identify)
 
 @router.get("/info/{identify}")
 async def browser_info(identify: str):

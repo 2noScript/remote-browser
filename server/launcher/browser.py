@@ -37,7 +37,7 @@ class BrowserLauncher:
             "os":["windows", "macos", "linux"],
             "screen":Screen(max_width=1920, max_height=1080),
             "humanize":True,
-            # "headless":"virtual",
+            "headless":"virtual",
             "geoip":True,
             **config,
 
